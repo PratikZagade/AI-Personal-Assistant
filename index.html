@@ -1,0 +1,346 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Personal Assistant</title>
+
+    <!-- GitHub Pages CSS -->
+    <link rel="stylesheet" href="./static/style.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">✦</div>
+            <div>
+                <h2>AI Assistant</h2>
+                <p>Your Smart AI Companion</p>
+            </div>
+        </div>
+
+        <span class="powered-badge">● Groq AI Powered</span>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <span class="hero-tag">YOUR PERSONAL AI ASSISTANT</span>
+
+        <h1>How can I help you today?</h1>
+
+        <p>
+            Ask questions, explore ideas, and summarize your emails
+            with the power of Artificial Intelligence.
+        </p>
+    </section>
+
+    <!-- Main -->
+    <main class="main-container">
+        <div class="cards-container">
+
+            <!-- Ask Anything -->
+            <section class="card">
+
+                <div class="card-heading">
+                    <div class="card-icon">✧</div>
+                    <div>
+                        <h2>Ask Anything</h2>
+                        <p>Get instant answers to your questions.</p>
+                    </div>
+                </div>
+
+                <form id="askForm">
+
+                    <label for="question">Your Question</label>
+
+                    <input
+                        type="text"
+                        id="question"
+                        name="question"
+                        placeholder="What would you like to know?"
+                        required
+                    >
+
+                    <div class="button-group">
+
+                        <button type="submit" id="askButton" class="primary-btn">
+                            Ask AI <span>→</span>
+                        </button>
+
+                        <button type="reset" class="reset-btn" id="askReset">
+                            ↻ Reset
+                        </button>
+
+                    </div>
+                </form>
+
+                <p id="ans-loading" class="loading" style="display:none;">
+                    Processing your question...
+                </p>
+
+                <div id="answer" class="result-box" aria-live="polite"></div>
+
+                <button
+                    type="button"
+                    id="copyAnswer"
+                    class="copy-btn"
+                    style="display:none;"
+                >
+                    📋 Copy Answer
+                </button>
+
+            </section>
+
+            <!-- Email Summarizer -->
+            <section class="card">
+
+                <div class="card-heading">
+                    <div class="card-icon email-icon">✉</div>
+                    <div>
+                        <h2>Summarize Email</h2>
+                        <p>Convert lengthy emails into short summaries.</p>
+                    </div>
+                </div>
+
+                <form id="emailForm">
+
+                    <label for="email">Paste Your Email</label>
+
+                    <textarea
+                        id="email"
+                        name="email"
+                        placeholder="Paste your complete email here..."
+                        required
+                    ></textarea>
+
+                    <div class="button-group">
+
+                        <button type="submit" id="summaryButton" class="primary-btn">
+                            Summarize Email <span>→</span>
+                        </button>
+
+                        <button type="reset" class="reset-btn" id="emailReset">
+                            ↻ Reset
+                        </button>
+
+                    </div>
+                </form>
+
+                <p id="summary-loading" class="loading" style="display:none;">
+                    Summarizing your email...
+                </p>
+
+                <div id="summary" class="result-box" aria-live="polite"></div>
+
+                <button
+                    type="button"
+                    id="copySummary"
+                    class="copy-btn"
+                    style="display:none;"
+                >
+                    📋 Copy Summary
+                </button>
+
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+
+        <div class="footer-links">
+
+            <a href="https://github.com/"
+               target="_blank"
+               rel="noopener noreferrer">GitHub</a>
+
+            <a href="#about">About Project</a>
+
+            <a href="mailto:your-email@example.com">Contact</a>
+
+        </div>
+
+        <p>© 2026 AI Personal Assistant. All rights reserved.</p>
+
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+
+        // Backend URL
+        // We will add your deployed Flask URL later.
+
+        const API_BASE_URL = "YOUR_BACKEND_URL";
+
+        // Copy Function
+
+        async function copyText(resultId, buttonId, originalText) {
+
+            const text = document.getElementById(resultId).innerText.trim();
+            const button = document.getElementById(buttonId);
+
+            if (!text) return;
+
+            try {
+
+                await navigator.clipboard.writeText(text);
+
+                button.innerText = "✓ Copied!";
+
+                setTimeout(() => {
+                    button.innerText = originalText;
+                }, 2000);
+
+            } catch (error) {
+
+                button.innerText = "Copy failed!";
+
+            }
+        }
+
+        // Ask Anything
+
+        document.getElementById("askForm").onsubmit = async (e) => {
+
+            e.preventDefault();
+
+            const loading = document.getElementById("ans-loading");
+            const answer = document.getElementById("answer");
+            const button = document.getElementById("askButton");
+            const copyButton = document.getElementById("copyAnswer");
+
+            if (API_BASE_URL === "YOUR_BACKEND_URL") {
+                answer.innerText = "Backend is not connected yet. Please check back after backend deployment.";
+                return;
+            }
+
+            loading.style.display = "block";
+            answer.innerText = "";
+            copyButton.style.display = "none";
+            button.disabled = true;
+
+            try {
+
+                const res = await fetch(`${API_BASE_URL}/ask`, {
+                    method: "POST",
+                    body: new FormData(e.target)
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.error || "Request failed.");
+                }
+
+                answer.innerText = data.response;
+
+                if (data.response) {
+                    copyButton.style.display = "inline-block";
+                }
+
+            } catch (error) {
+
+                answer.innerText = "Error: " + error.message;
+
+            } finally {
+
+                loading.style.display = "none";
+                button.disabled = false;
+
+            }
+        };
+
+        // Summarize Email
+
+        document.getElementById("emailForm").onsubmit = async (e) => {
+
+            e.preventDefault();
+
+            const loading = document.getElementById("summary-loading");
+            const summary = document.getElementById("summary");
+            const button = document.getElementById("summaryButton");
+            const copyButton = document.getElementById("copySummary");
+
+            if (API_BASE_URL === "YOUR_BACKEND_URL") {
+                summary.innerText = "Backend is not connected yet. Please check back after backend deployment.";
+                return;
+            }
+
+            loading.style.display = "block";
+            summary.innerText = "";
+            copyButton.style.display = "none";
+            button.disabled = true;
+
+            try {
+
+                const res = await fetch(`${API_BASE_URL}/summarize`, {
+                    method: "POST",
+                    body: new FormData(e.target)
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.error || "Request failed.");
+                }
+
+                summary.innerText = data.response;
+
+                if (data.response) {
+                    copyButton.style.display = "inline-block";
+                }
+
+            } catch (error) {
+
+                summary.innerText = "Error: " + error.message;
+
+            } finally {
+
+                loading.style.display = "none";
+                button.disabled = false;
+
+            }
+        };
+
+        // Copy Answer
+
+        document.getElementById("copyAnswer").onclick = () => {
+            copyText("answer", "copyAnswer", "📋 Copy Answer");
+        };
+
+        // Copy Summary
+
+        document.getElementById("copySummary").onclick = () => {
+            copyText("summary", "copySummary", "📋 Copy Summary");
+        };
+
+        // Reset Ask Anything
+
+        document.getElementById("askReset").onclick = () => {
+
+            document.getElementById("answer").innerText = "";
+            document.getElementById("copyAnswer").style.display = "none";
+            document.getElementById("ans-loading").style.display = "none";
+
+        };
+
+        // Reset Email
+
+        document.getElementById("emailReset").onclick = () => {
+
+            document.getElementById("summary").innerText = "";
+            document.getElementById("copySummary").style.display = "none";
+            document.getElementById("summary-loading").style.display = "none";
+
+        };
+
+    </script>
+
+</body>
+</html>
