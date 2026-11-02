@@ -1,5 +1,6 @@
 
 from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS
 import os
 from dotenv import load_dotenv
 from groq import Groq
@@ -10,6 +11,16 @@ from groq import Groq
 # =================================
 
 app = Flask(__name__)
+
+# Allow requests from your GitHub Pages website
+CORS(
+    app,
+    resources={
+        r"/*": {
+            "origins": ["https://pratikzagade.github.io"]
+        }
+    }
+)
 
 # Maximum request size: 64 KB
 app.config["MAX_CONTENT_LENGTH"] = 64 * 1024
@@ -33,7 +44,6 @@ MODEL = "openai/gpt-oss-20b"
 
 @app.route("/")
 def hello_world():
-
     return render_template("index.html")
 
 
@@ -61,9 +71,7 @@ def ask():
     try:
 
         response = client.chat.completions.create(
-
             model=MODEL,
-
             messages=[
                 {
                     "role": "system",
@@ -74,7 +82,6 @@ def ask():
                     "content": question
                 }
             ],
-
             temperature=0.7,
             max_completion_tokens=512
         )
@@ -125,9 +132,7 @@ def summarize():
         )
 
         response = client.chat.completions.create(
-
             model=MODEL,
-
             messages=[
                 {
                     "role": "system",
@@ -138,7 +143,6 @@ def summarize():
                     "content": prompt
                 }
             ],
-
             temperature=0.3,
             max_completion_tokens=512
         )
