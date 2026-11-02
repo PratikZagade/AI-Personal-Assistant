@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Personal Assistant</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- GitHub Pages CSS Path -->
+    <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
@@ -146,6 +147,7 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-links">
+
             <a href="https://github.com/"
                target="_blank"
                rel="noopener noreferrer">GitHub</a>
@@ -153,6 +155,7 @@
             <a href="#about">About Project</a>
 
             <a href="mailto:your-email@example.com">Contact</a>
+
         </div>
 
         <p>© 2026 AI Personal Assistant. All rights reserved.</p>
@@ -162,7 +165,14 @@
     <script>
 
         // =====================================
-        // 1. Common Copy Function with Fallback
+        // 1. Backend API Configuration
+        // =====================================
+
+        // Replace this with your deployed Flask backend URL.
+        const API_BASE_URL = "YOUR_BACKEND_URL";
+
+        // =====================================
+        // 2. Common Copy Function
         // =====================================
 
         async function copyText(resultId, buttonId, originalText) {
@@ -179,45 +189,9 @@
 
             try {
 
-                // First try the modern Clipboard API.
-                if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(text);
 
-                    await navigator.clipboard.writeText(text);
-
-                } else {
-
-                    // Fallback for HTTP network addresses.
-                    const temporaryTextarea = document.createElement("textarea");
-
-                    temporaryTextarea.value = text;
-                    temporaryTextarea.setAttribute("readonly", "");
-
-                    temporaryTextarea.style.position = "fixed";
-                    temporaryTextarea.style.left = "-9999px";
-                    temporaryTextarea.style.top = "0";
-                    temporaryTextarea.style.opacity = "0";
-
-                    document.body.appendChild(temporaryTextarea);
-
-                    temporaryTextarea.focus();
-                    temporaryTextarea.select();
-                    temporaryTextarea.setSelectionRange(
-                        0,
-                        temporaryTextarea.value.length
-                    );
-
-                    const copied = document.execCommand("copy");
-
-                    document.body.removeChild(temporaryTextarea);
-
-                    if (!copied) {
-                        throw new Error("Browser could not copy the text.");
-                    }
-                }
-
-                // Show success message.
                 button.innerText = "✓ Copied!";
-
                 button.disabled = true;
 
                 setTimeout(() => {
@@ -228,18 +202,17 @@
             } catch (error) {
 
                 console.error("Copy error:", error);
-
                 button.innerText = "Copy failed!";
 
                 setTimeout(() => {
                     button.innerText = originalText;
                 }, 2500);
+
             }
         }
 
-
         // =====================================
-        // 2. Ask Anything
+        // 3. Ask Anything
         // =====================================
 
         document.getElementById("askForm").onsubmit = async (e) => {
@@ -256,12 +229,11 @@
             loading.style.display = "block";
             answer.innerText = "";
             copyButton.style.display = "none";
-
             button.disabled = true;
 
             try {
 
-                const res = await fetch("/ask", {
+                const res = await fetch(`${API_BASE_URL}/ask`, {
                     method: "POST",
                     body: formData
                 });
@@ -290,9 +262,8 @@
             }
         };
 
-
         // =====================================
-        // 3. Summarize Email
+        // 4. Summarize Email
         // =====================================
 
         document.getElementById("emailForm").onsubmit = async (e) => {
@@ -309,12 +280,11 @@
             loading.style.display = "block";
             summary.innerText = "";
             copyButton.style.display = "none";
-
             button.disabled = true;
 
             try {
 
-                const res = await fetch("/summarize", {
+                const res = await fetch(`${API_BASE_URL}/summarize`, {
                     method: "POST",
                     body: formData
                 });
@@ -343,9 +313,8 @@
             }
         };
 
-
         // =====================================
-        // 4. Copy AI Answer
+        // 5. Copy Answer
         // =====================================
 
         document.getElementById("copyAnswer").onclick = async () => {
@@ -358,9 +327,8 @@
 
         };
 
-
         // =====================================
-        // 5. Copy Email Summary
+        // 6. Copy Summary
         // =====================================
 
         document.getElementById("copySummary").onclick = async () => {
@@ -373,32 +341,26 @@
 
         };
 
-
         // =====================================
-        // 6. Reset Ask Anything
+        // 7. Reset Ask Anything
         // =====================================
 
         document.getElementById("askReset").onclick = () => {
 
             document.getElementById("answer").innerText = "";
-
             document.getElementById("ans-loading").style.display = "none";
-
             document.getElementById("copyAnswer").style.display = "none";
 
         };
 
-
         // =====================================
-        // 7. Reset Email Summarizer
+        // 8. Reset Email Summarizer
         // =====================================
 
         document.getElementById("emailReset").onclick = () => {
 
             document.getElementById("summary").innerText = "";
-
             document.getElementById("summary-loading").style.display = "none";
-
             document.getElementById("copySummary").style.display = "none";
 
         };
