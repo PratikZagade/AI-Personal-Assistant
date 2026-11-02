@@ -1,0 +1,409 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Personal Assistant</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">✦</div>
+            <div>
+                <h2>AI Assistant</h2>
+                <p>Your Smart AI Companion</p>
+            </div>
+        </div>
+
+        <span class="powered-badge">● Groq AI Powered</span>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <span class="hero-tag">YOUR PERSONAL AI ASSISTANT</span>
+
+        <h1>How can I help you today?</h1>
+
+        <p>
+            Ask questions, explore ideas, and summarize your emails
+            with the power of Artificial Intelligence.
+        </p>
+    </section>
+
+    <!-- Main Section -->
+    <main class="main-container">
+        <div class="cards-container">
+
+            <!-- Ask Anything Card -->
+            <section class="card">
+
+                <div class="card-heading">
+                    <div class="card-icon">✧</div>
+                    <div>
+                        <h2>Ask Anything</h2>
+                        <p>Get instant answers to your questions.</p>
+                    </div>
+                </div>
+
+                <form id="askForm">
+                    <label for="question">Your Question</label>
+
+                    <input
+                        type="text"
+                        id="question"
+                        name="question"
+                        placeholder="What would you like to know?"
+                        required
+                    >
+
+                    <div class="button-group">
+                        <button type="submit" id="askButton" class="primary-btn">
+                            Ask AI <span>→</span>
+                        </button>
+
+                        <button type="reset" class="reset-btn" id="askReset">
+                            ↻ Reset
+                        </button>
+                    </div>
+                </form>
+
+                <p id="ans-loading" class="loading" style="display:none;">
+                    Processing your question...
+                </p>
+
+                <div id="answer" class="result-box" aria-live="polite"></div>
+
+                <button
+                    type="button"
+                    id="copyAnswer"
+                    class="copy-btn"
+                    style="display:none;"
+                >
+                    📋 Copy Answer
+                </button>
+
+            </section>
+
+            <!-- Summarize Email Card -->
+            <section class="card">
+
+                <div class="card-heading">
+                    <div class="card-icon email-icon">✉</div>
+                    <div>
+                        <h2>Summarize Email</h2>
+                        <p>Convert lengthy emails into short summaries.</p>
+                    </div>
+                </div>
+
+                <form id="emailForm">
+                    <label for="email">Paste Your Email</label>
+
+                    <textarea
+                        id="email"
+                        name="email"
+                        placeholder="Paste your complete email here..."
+                        required
+                    ></textarea>
+
+                    <div class="button-group">
+                        <button type="submit" id="summaryButton" class="primary-btn">
+                            Summarize Email <span>→</span>
+                        </button>
+
+                        <button type="reset" class="reset-btn" id="emailReset">
+                            ↻ Reset
+                        </button>
+                    </div>
+                </form>
+
+                <p id="summary-loading" class="loading" style="display:none;">
+                    Summarizing your email...
+                </p>
+
+                <div id="summary" class="result-box" aria-live="polite"></div>
+
+                <button
+                    type="button"
+                    id="copySummary"
+                    class="copy-btn"
+                    style="display:none;"
+                >
+                    📋 Copy Summary
+                </button>
+
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="https://github.com/"
+               target="_blank"
+               rel="noopener noreferrer">GitHub</a>
+
+            <a href="#about">About Project</a>
+
+            <a href="mailto:your-email@example.com">Contact</a>
+        </div>
+
+        <p>© 2026 AI Personal Assistant. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+
+        // =====================================
+        // 1. Common Copy Function with Fallback
+        // =====================================
+
+        async function copyText(resultId, buttonId, originalText) {
+
+            const resultElement = document.getElementById(resultId);
+            const button = document.getElementById(buttonId);
+
+            const text = resultElement.innerText.trim();
+
+            if (!text) {
+                button.innerText = "Nothing to copy!";
+                return;
+            }
+
+            try {
+
+                // First try the modern Clipboard API.
+                if (navigator.clipboard && window.isSecureContext) {
+
+                    await navigator.clipboard.writeText(text);
+
+                } else {
+
+                    // Fallback for HTTP network addresses.
+                    const temporaryTextarea = document.createElement("textarea");
+
+                    temporaryTextarea.value = text;
+                    temporaryTextarea.setAttribute("readonly", "");
+
+                    temporaryTextarea.style.position = "fixed";
+                    temporaryTextarea.style.left = "-9999px";
+                    temporaryTextarea.style.top = "0";
+                    temporaryTextarea.style.opacity = "0";
+
+                    document.body.appendChild(temporaryTextarea);
+
+                    temporaryTextarea.focus();
+                    temporaryTextarea.select();
+                    temporaryTextarea.setSelectionRange(
+                        0,
+                        temporaryTextarea.value.length
+                    );
+
+                    const copied = document.execCommand("copy");
+
+                    document.body.removeChild(temporaryTextarea);
+
+                    if (!copied) {
+                        throw new Error("Browser could not copy the text.");
+                    }
+                }
+
+                // Show success message.
+                button.innerText = "✓ Copied!";
+
+                button.disabled = true;
+
+                setTimeout(() => {
+                    button.innerText = originalText;
+                    button.disabled = false;
+                }, 2000);
+
+            } catch (error) {
+
+                console.error("Copy error:", error);
+
+                button.innerText = "Copy failed!";
+
+                setTimeout(() => {
+                    button.innerText = originalText;
+                }, 2500);
+            }
+        }
+
+
+        // =====================================
+        // 2. Ask Anything
+        // =====================================
+
+        document.getElementById("askForm").onsubmit = async (e) => {
+
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+
+            const loading = document.getElementById("ans-loading");
+            const answer = document.getElementById("answer");
+            const button = document.getElementById("askButton");
+            const copyButton = document.getElementById("copyAnswer");
+
+            loading.style.display = "block";
+            answer.innerText = "";
+            copyButton.style.display = "none";
+
+            button.disabled = true;
+
+            try {
+
+                const res = await fetch("/ask", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.error || "Something went wrong.");
+                }
+
+                answer.innerText = data.response;
+
+                if (data.response && data.response.trim()) {
+                    copyButton.style.display = "inline-block";
+                }
+
+            } catch (error) {
+
+                answer.innerText = "Error: " + error.message;
+
+            } finally {
+
+                loading.style.display = "none";
+                button.disabled = false;
+
+            }
+        };
+
+
+        // =====================================
+        // 3. Summarize Email
+        // =====================================
+
+        document.getElementById("emailForm").onsubmit = async (e) => {
+
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+
+            const loading = document.getElementById("summary-loading");
+            const summary = document.getElementById("summary");
+            const button = document.getElementById("summaryButton");
+            const copyButton = document.getElementById("copySummary");
+
+            loading.style.display = "block";
+            summary.innerText = "";
+            copyButton.style.display = "none";
+
+            button.disabled = true;
+
+            try {
+
+                const res = await fetch("/summarize", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.error || "Something went wrong.");
+                }
+
+                summary.innerText = data.response;
+
+                if (data.response && data.response.trim()) {
+                    copyButton.style.display = "inline-block";
+                }
+
+            } catch (error) {
+
+                summary.innerText = "Error: " + error.message;
+
+            } finally {
+
+                loading.style.display = "none";
+                button.disabled = false;
+
+            }
+        };
+
+
+        // =====================================
+        // 4. Copy AI Answer
+        // =====================================
+
+        document.getElementById("copyAnswer").onclick = async () => {
+
+            await copyText(
+                "answer",
+                "copyAnswer",
+                "📋 Copy Answer"
+            );
+
+        };
+
+
+        // =====================================
+        // 5. Copy Email Summary
+        // =====================================
+
+        document.getElementById("copySummary").onclick = async () => {
+
+            await copyText(
+                "summary",
+                "copySummary",
+                "📋 Copy Summary"
+            );
+
+        };
+
+
+        // =====================================
+        // 6. Reset Ask Anything
+        // =====================================
+
+        document.getElementById("askReset").onclick = () => {
+
+            document.getElementById("answer").innerText = "";
+
+            document.getElementById("ans-loading").style.display = "none";
+
+            document.getElementById("copyAnswer").style.display = "none";
+
+        };
+
+
+        // =====================================
+        // 7. Reset Email Summarizer
+        // =====================================
+
+        document.getElementById("emailReset").onclick = () => {
+
+            document.getElementById("summary").innerText = "";
+
+            document.getElementById("summary-loading").style.display = "none";
+
+            document.getElementById("copySummary").style.display = "none";
+
+        };
+
+    </script>
+
+</body>
+</html>

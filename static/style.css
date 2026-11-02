@@ -1,0 +1,567 @@
+
+/* ==========================
+   1. Global Reset
+========================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: #f3f8ff;
+    color: #263b59;
+}
+
+
+/* ==========================
+   2. Header
+========================== */
+
+.header {
+    max-width: 1250px;
+    margin: auto;
+    padding: 22px 25px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.logo-icon {
+    width: 48px;
+    height: 48px;
+
+    background: linear-gradient(135deg, #35b9f5, #2875f5);
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 13px;
+    font-size: 28px;
+}
+
+.logo h2 {
+    color: #2875f5;
+    font-size: 21px;
+    margin-bottom: 5px;
+}
+
+.logo p {
+    font-size: 13px;
+    color: #8195b2;
+}
+
+.powered-badge {
+    background: #e5f8ef;
+    color: #10a66a;
+    padding: 10px 17px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+
+/* ==========================
+   3. Hero Section
+========================== */
+
+.hero {
+    text-align: center;
+    padding: 55px 20px 45px;
+}
+
+.hero-tag {
+    display: inline-block;
+
+    background: #e1f3ff;
+    color: #168fd4;
+
+    padding: 9px 19px;
+    border-radius: 30px;
+
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.hero h1 {
+    color: #2875f5;
+    font-size: 40px;
+    margin: 23px 0 18px;
+}
+
+.hero p {
+    color: #7186a4;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+
+/* ==========================
+   4. Main Container
+========================== */
+
+.main-container {
+    max-width: 1250px;
+    margin: auto;
+    padding: 0 25px 50px;
+}
+
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 25px;
+}
+
+
+/* ==========================
+   5. Cards
+========================== */
+
+.card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 19px;
+
+    border: 1px solid #dfebff;
+
+    box-shadow: 0 10px 30px rgba(64, 130, 220, 0.07);
+
+    min-width: 0;
+    min-height: 420px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* ==========================
+   6. Card Headings
+========================== */
+
+.card-heading {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 32px;
+}
+
+.card-icon {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #e4f3ff;
+    color: #1599df;
+
+    border-radius: 14px;
+    font-size: 29px;
+}
+
+.email-icon {
+    background: #eeebff;
+    color: #7657f6;
+}
+
+.card-heading h2 {
+    color: #2875f5;
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.card-heading p {
+    color: #8496b1;
+    font-size: 14px;
+}
+
+
+/* ==========================
+   7. Forms
+========================== */
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #344b68;
+    margin-bottom: 12px;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 15px;
+
+    border: 1px solid #dce8fa;
+    border-radius: 11px;
+
+    background: #f9fbff;
+    color: #334155;
+
+    font-size: 15px;
+    outline: none;
+
+    transition: 0.3s;
+}
+
+input {
+    height: 53px;
+}
+
+textarea {
+    height: 165px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #99a9bf;
+}
+
+input:focus,
+textarea:focus {
+    border-color: #42a5f5;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.10);
+}
+
+
+/* ==========================
+   8. Buttons
+========================== */
+
+.button-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+button {
+    padding: 14px 21px;
+    border-radius: 11px;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, #32b7f3, #2875f5);
+    color: white;
+    border: none;
+
+    box-shadow: 0 5px 12px rgba(40, 117, 245, 0.17);
+}
+
+.primary-btn span {
+    margin-left: 15px;
+    font-size: 17px;
+}
+
+.primary-btn:hover {
+    background: linear-gradient(135deg, #229fe3, #1c62e0);
+    transform: translateY(-2px);
+}
+
+.primary-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.reset-btn {
+    background: #eef7ff;
+    color: #2588d3;
+    border: 1px solid #d8eaff;
+    min-width: 135px;
+}
+
+.reset-btn:hover {
+    background: #dceeff;
+}
+
+
+/* ==========================
+   9. Loading
+========================== */
+
+.loading {
+    color: #2889db;
+    font-size: 14px;
+    margin-top: 15px;
+}
+
+
+/* ==========================
+   10. Result Box
+========================== */
+
+.result-box {
+    margin-top: 18px;
+    padding: 15px;
+
+    background: #f0f7ff;
+    border-left: 4px solid #35a8f5;
+    border-radius: 9px;
+
+    color: #405776;
+    font-size: 14px;
+    line-height: 1.7;
+
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+
+/* ==========================
+   11. Copy Buttons
+========================== */
+
+.copy-btn {
+    display: none;
+    width: fit-content;
+    margin-top: 12px;
+
+    padding: 10px 18px;
+
+    background: #e6f4ff;
+    color: #168bd2;
+
+    border: 1px solid #cce8ff;
+    border-radius: 9px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.copy-btn:hover {
+    background: #d4ebff;
+    border-color: #8bcaff;
+    transform: translateY(-1px);
+}
+
+.copy-btn:active {
+    transform: translateY(0);
+}
+
+
+/* ==========================
+   12. Footer
+========================== */
+
+.footer {
+    width: 100%;
+    background: #ffffff;
+
+    padding: 25px 15px;
+    text-align: center;
+
+    color: #8496b1;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    margin-bottom: 15px;
+}
+
+.footer-links a {
+    color: #2875f5;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.footer-links a:hover {
+    color: #1599df;
+}
+
+.footer p {
+    font-size: 14px;
+}
+
+
+/* ==========================
+   13. Tablet Responsive
+========================== */
+
+@media (max-width: 900px) {
+
+    .cards-container {
+        gap: 18px;
+    }
+
+    .card {
+        padding: 23px;
+    }
+
+    .card-heading h2 {
+        font-size: 19px;
+    }
+
+    .card-heading p {
+        font-size: 12px;
+    }
+
+    .hero h1 {
+        font-size: 34px;
+    }
+
+}
+
+
+/* ==========================
+   14. Mobile Responsive
+========================== */
+
+@media (max-width: 650px) {
+
+    .header {
+        padding: 18px 15px;
+    }
+
+    .logo-icon {
+        width: 42px;
+        height: 42px;
+    }
+
+    .logo h2 {
+        font-size: 18px;
+    }
+
+    .powered-badge {
+        font-size: 10px;
+        padding: 9px 11px;
+    }
+
+    .hero {
+        padding: 45px 17px 30px;
+    }
+
+    .hero h1 {
+        font-size: 29px;
+        line-height: 1.3;
+    }
+
+    .hero p {
+        font-size: 14px;
+    }
+
+    .main-container {
+        padding: 0 15px 35px;
+    }
+
+    .cards-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .card {
+        min-height: auto;
+        padding: 23px 19px;
+    }
+
+    .card-heading {
+        margin-bottom: 25px;
+    }
+
+    .card-heading h2 {
+        font-size: 20px;
+    }
+
+    .card-heading p {
+        font-size: 13px;
+    }
+
+    textarea {
+        height: 145px;
+    }
+
+    .button-group {
+        gap: 10px;
+    }
+
+    .primary-btn,
+    .reset-btn {
+        padding: 13px 15px;
+    }
+
+    .footer {
+        padding: 25px 12px;
+    }
+
+    .footer-links {
+        gap: 20px;
+    }
+
+    .footer-links a {
+        font-size: 13px;
+    }
+
+    .footer p {
+        font-size: 12px;
+    }
+
+}
+
+
+/* ==========================
+   15. Small Mobile
+========================== */
+
+@media (max-width: 380px) {
+
+    .powered-badge {
+        font-size: 9px;
+        padding: 8px;
+    }
+
+    .hero h1 {
+        font-size: 25px;
+    }
+
+    .card {
+        padding: 19px 15px;
+    }
+
+    .button-group button {
+        font-size: 12px;
+    }
+
+    .reset-btn {
+        min-width: 105px;
+    }
+
+}
